@@ -1,0 +1,84 @@
+<html>
+  <head>
+    <title>Convert JSON to multi-line (and back)</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      textarea {
+        font-family: monospace;
+        background: #000;
+        color: #fff;
+      }
+
+      .box {
+        display: inline-block;
+        width: 50%;
+        vertical-align: top;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Convert JSON to multi-line Scala string (and back)</h1>
+
+    <p>
+      <button id="convert-json-to-ml">Convert JSON to ML</button>
+      <button id="convert-ml-to-json">Convert ML to JSON</button>
+    </p>
+
+    <div class="box">
+      <label for="from">Input:</label><br>
+      <textarea id="from">
+      </textarea>
+    </div><!--
+    --><div class="box">
+      <label for="to">Output:</label><br>
+      <textarea readonly id="to">
+      </textarea>
+    </div>
+
+    <script>
+      var rows = 50
+      var cols = 120
+      var toScalaButton = document.getElementById('convert-json-to-ml')
+      var toJsonButton = document.getElementById('convert-ml-to-json')
+      var from = document.getElementById('from')
+      var to = document.getElementById('to')
+      from.rows = rows
+      from.cols = cols
+      to.rows = rows
+      to.cols = cols
+
+      function stringify (value) {
+        return JSON.stringify(value, null, 3)
+      }
+
+      toScalaButton.addEventListener('click', function (e) {
+        try {
+          var output = stringify(JSON.parse(from.value))
+          output = output.split('\n').map(function (line) {
+            return '|' + line + '\n'
+          }).join('')
+          to.value = output
+        } catch (e) {
+          console.error(e)
+          alert(e)
+        }
+      })
+
+      toJsonButton.addEventListener('click', function (e) {
+        try {
+          var output = from.value.split('\n').map(function (line) {
+            return line.replace('|', '') + '\n'
+          }).join('')
+          output = stringify(JSON.parse(output))
+          to.value = output
+        } catch (e) {
+          console.error(e)
+          alert(e)
+        }
+      })
+    </script>
+  </body>
+</html>
